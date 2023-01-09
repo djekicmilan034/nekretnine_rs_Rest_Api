@@ -29,7 +29,7 @@ def get_item(id):
         del item.__dict__['_sa_instance_state']
         return jsonify(item.__dict__)
     else:
-        return "Id does not exists, enter new ID value!"
+        return "ID does not exist, please enter a new ID value!"
 
 #Prikaz nekretnina koje imaju ispunjene neki od uslova(Unet odredjeni grad, kvadraturu vecu od unete minimalne,
 #kvadraturu manju od unete maksimalne, i da je transakcija(Prodaja/Izdavanje) )
@@ -56,15 +56,20 @@ def createNewItem():
     if request.method == 'POST':
         transakcija = request.form['transakcija']
         vrsta = request.form['vrsta']
-        cenaNek = request.form['cenaNek']
-        kvadratura = request.form['kvadratura']
+        cenaNek = (float(request.form['cenaNek']))
+        kvadratura = (float(request.form['kvadratura']))
         grad = request.form['grad']
         naselje = request.form['naselje']
 
-        nova_nekretnina = baza.Oglas(transakcija=transakcija, vrsta=vrsta,cenaNek=cenaNek,kvadratura=kvadratura,grad=grad,naselje=naselje)
-        baza.session.add(nova_nekretnina)
-        baza.session.commit()
-        return "Data added!"
+        if cenaNek<0:
+            return "Values cenaNek is negative, please enter a new positive value!"
+        elif kvadratura<0:
+            return "Values kvadratura is negative, please enter a new positive value!"
+        else:
+            nova_nekretnina = baza.Oglas(transakcija=transakcija, vrsta=vrsta,cenaNek=cenaNek,kvadratura=kvadratura,grad=grad,naselje=naselje)
+            baza.session.add(nova_nekretnina)
+            baza.session.commit()
+            return "Data added!"
 
 
 
