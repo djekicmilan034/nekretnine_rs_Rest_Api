@@ -62,9 +62,9 @@ def createNewItem():
         naselje = request.form['naselje']
 
         if cenaNek<0:
-            return "Values cenaNek is negative, please enter a new positive value!"
+            return "Value cenaNek is negative, please enter a new positive value!"
         elif kvadratura<0:
-            return "Values kvadratura is negative, please enter a new positive value!"
+            return "Value kvadratura is negative, please enter a new positive value!"
         else:
             nova_nekretnina = baza.Oglas(transakcija=transakcija, vrsta=vrsta,cenaNek=cenaNek,kvadratura=kvadratura,grad=grad,naselje=naselje)
             baza.session.add(nova_nekretnina)
