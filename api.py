@@ -24,9 +24,12 @@ def get_all_items_paginations(number_of_items):
 #Prikaz nekretnine sa odredjenim ID-jem u bazi.
 @app.route('/all/<id>', methods=['GET'])
 def get_item(id):
-    item = baza.session.query(baza.Oglas).filter(baza.Oglas.id==id).first()
-    del item.__dict__['_sa_instance_state']
-    return jsonify(item.__dict__)
+    if baza.session.query(baza.Oglas).filter(baza.Oglas.id==id).first():
+        item = baza.session.query(baza.Oglas).filter(baza.Oglas.id==id).first()
+        del item.__dict__['_sa_instance_state']
+        return jsonify(item.__dict__)
+    else:
+        return "Id does not exists, enter new ID value!"
 
 #Prikaz nekretnina koje imaju ispunjene neki od uslova(Unet odredjeni grad, kvadraturu vecu od unete minimalne,
 #kvadraturu manju od unete maksimalne, i da je transakcija(Prodaja/Izdavanje) )
