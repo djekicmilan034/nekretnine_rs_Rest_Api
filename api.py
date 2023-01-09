@@ -12,6 +12,15 @@ def get_all_items():
     items.append(item.__dict__)
   return jsonify(items)
 
+#Prikaz svih nekretnina u bazi sa paginaciojm.
+@app.route('/all/paginations/<number_of_items>', methods=['GET'])
+def get_all_items_paginations(number_of_items):
+  items = []
+  for item in baza.session.query(baza.Oglas).limit(number_of_items):
+    del item.__dict__['_sa_instance_state']
+    items.append(item.__dict__)
+  return jsonify(items)
+
 #Prikaz nekretnine sa odredjenim ID-jem u bazi.
 @app.route('/all/<id>', methods=['GET'])
 def get_item(id):
