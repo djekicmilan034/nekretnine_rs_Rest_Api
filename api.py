@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, Response, request,redirect
 from sqlalchemy import *
 import baza
+import pdb
 
 app = Flask(__name__,template_folder='template')
 #Prikaz svih nekretnina u bazi.
@@ -33,17 +34,13 @@ def get_item(id):
 
 #Prikaz nekretnina koje imaju ispunjene neki od uslova(Unet odredjeni grad, kvadraturu vecu od unete minimalne,
 #kvadraturu manju od unete maksimalne, i da je transakcija(Prodaja/Izdavanje) )
-@app.route('/all/<gradIn>/<kvadMin>/<kvadMax>/<Tran>', methods=['GET'])
-def searchItems(gradIn,kvadMin,kvadMax,Tran):
-    items = []
-    for item in baza.session.query(baza.Oglas).filter(or_(baza.Oglas.grad==gradIn,
-                                                           baza.Oglas.kvadratura > kvadMin,
-                                                           baza.Oglas.kvadratura < kvadMax,
-                                                           baza.Oglas.transakcija == Tran
-                                                           )).all():
-        del item.__dict__['_sa_instance_state']
-        items.append(item.__dict__)
-    return jsonify(items)
+@app.route('/parameters', methods=['GET'])
+def query_strings():
+    grad = request.args.get('grad',None)
+    kvadMin = request.args.get('kvadMin',0.0)
+    kvadMax= request.args.get('kvadMax',1000000)
+    Tran = request.args.get('Tran', None)
+    return '''<h1>{}:{}:{}:{}</h1>''' .format(grad,kvadMin,kvadMax,Tran)
 
 
 
@@ -73,7 +70,7 @@ def createNewItem():
 
 
 
-#Promena podataka nekretnine sa oredjenim ID-jem u bazi.
+#Promena podataka nekretnine sa odredjenim ID-jem u bazi.
 @app.route('/all/update/<id>', methods=['GET', 'POST'])
 def updateData(id):
     if request.method == 'GET':
