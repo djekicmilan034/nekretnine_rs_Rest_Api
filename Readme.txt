@@ -10,8 +10,9 @@ Nakon sto inicijalizujemo konekciju sa bazom, pokrecemo Web Scraper stranice,
 pokretanjem skripte main.py i time vrsimo skladistenje podata u bazu sa stranice nekretnine.rs
 
 Rest Api se pokrece pokretanjem skripte api.py gde mozemo videti implementaciju:
-Prikaz svih elemenata u bazi
-Prikaz elementa po zadatim Id-jem
+Prikaz svih nekretnina u bazi
+Prikaz nekretnina sa paginaciojm.
+Prikaz elementa po zadatom Id
 Pretraga po zadatim vrednostima
 Dodavanje novih nekretnina u bazu
 Izmenu postojecih nekretnina u bazi.
