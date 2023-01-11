@@ -1,10 +1,11 @@
 from flask import Flask, render_template, jsonify, Response, request,redirect
 from sqlalchemy import *
-from sqlalchemy.sql.functions import coalesce
 import baza
 import pdb
 
 app = Flask(__name__,template_folder='template')
+
+
 #Prikaz svih nekretnina u bazi.
 @app.route('/all', methods=['GET'])
 def get_all_items():
@@ -33,8 +34,8 @@ def get_item(id):
     else:
         return "ID does not exist, please enter a new ID value!"
 
-#Prikaz nekretnina koje imaju ispunjene neki od uslova(Unet odredjeni grad, kvadraturu vecu od unete minimalne,
-#kvadraturu manju od unete maksimalne, i da je transakcija(Prodaja/Izdavanje) )
+#Prikaz nekretnina koje imaju ispunjene uslove(Unet odredjeni grad, kvadraturu vecu od unete minimalne,
+#kvadraturu manju od unete maksimalne, i da je transakcija(Prodaja/Izdavanje))
 @app.route('/search', methods=['GET'])
 def search():
     grad = request.args.get('grad',None)
@@ -52,9 +53,6 @@ def search():
         del item.__dict__['_sa_instance_state']
         items.append(item.__dict__)
     return jsonify(items)
-
-
-
 
 
 #Kreiranje nove nekretnine i dodavanje iste u bazi.
@@ -90,7 +88,6 @@ def updateData(id):
         return render_template('updateData.html')
 
     if request.method == 'POST':
-
         nekretnina_koja_se_menja = baza.session.query(baza.Oglas).filter(baza.Oglas.id ==int(id)).first()
         nekretnina_koja_se_menja.transakcija = request.form['transakcija']
         nekretnina_koja_se_menja.vrsta=request.form['vrsta']
