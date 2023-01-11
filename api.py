@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, Response, request,redirect
 from sqlalchemy import *
+from sqlalchemy.sql.functions import coalesce
 import baza
 import pdb
 
@@ -13,7 +14,7 @@ def get_all_items():
     items.append(item.__dict__)
   return jsonify(items)
 
-#Prikaz svih nekretnina u bazi sa paginaciojm.
+#Prikaz nekretnina sa paginaciojm.
 @app.route('/all/paginations/<number_of_items>', methods=['GET'])
 def get_all_items_paginations(number_of_items):
   items = []
@@ -34,13 +35,25 @@ def get_item(id):
 
 #Prikaz nekretnina koje imaju ispunjene neki od uslova(Unet odredjeni grad, kvadraturu vecu od unete minimalne,
 #kvadraturu manju od unete maksimalne, i da je transakcija(Prodaja/Izdavanje) )
-@app.route('/parameters', methods=['GET'])
-def query_strings():
+@app.route('/search', methods=['GET'])
+def search():
     grad = request.args.get('grad',None)
-    kvadMin = request.args.get('kvadMin',0.0)
-    kvadMax= request.args.get('kvadMax',1000000)
+    kvadMin = request.args.get('kvadMin',None)
+    kvadMax= request.args.get('kvadMax',None)
     Tran = request.args.get('Tran', None)
-    return '''<h1>{}:{}:{}:{}</h1>''' .format(grad,kvadMin,kvadMax,Tran)
+    print(grad,kvadMin,kvadMax,Tran)
+
+    items = []
+    for item in baza.session.query(baza.Oglas).filter(and_(baza.Oglas.grad == grad,
+                                                          baza.Oglas.kvadratura > kvadMin,
+                                                          baza.Oglas.kvadratura < kvadMax,
+                                                          baza.Oglas.transakcija == Tran
+                                                          )).all():
+        del item.__dict__['_sa_instance_state']
+        items.append(item.__dict__)
+    return jsonify(items)
+
+
 
 
 
